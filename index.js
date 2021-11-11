@@ -20,6 +20,7 @@ async function run() {
     const database = client.db("autoCar");
     const carsCollection = database.collection("cars");
     const ordersCollection = database.collection("orders");
+    const reviewsCollection = database.collection("reviews");
     
     //GET API cars
      app.get('/cars', async (req, res) => {
@@ -34,6 +35,39 @@ async function run() {
       const car = await carsCollection.insertOne(cars)
       res.json(car)
     })
+
+
+     // GET API Cars Id
+     app.get('/cars/:id', async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: ObjectId(id)};
+      const car = await carsCollection.findOne(query);
+      res.send(car);
+    })
+
+    // Delete API Cars Id
+    app.delete('/cars/:id', async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: ObjectId(id)};
+      const car = await carsCollection.deleteOne(query);
+      res.json(car);
+    })
+    // ---------------------------------------------------------
+    // ------------------- reviewsCollection  -----------------------------
+    // ---------------------------------------------------------
+      //GET API cars
+      app.get('/review', async (req, res) => {
+        const cursor = reviewsCollection.find({})
+        const review = await cursor.toArray();
+        res.send(review)
+      })
+  
+      // POST API
+      app.post("/review", async (req, res) => {
+        const reviews = req.body;
+        const review = await reviewsCollection.insertOne(reviews)
+        res.json(review)
+      })
 
     // ---------------------------------------------------------
     // ------------------- ordersCollection  -----------------------------
@@ -51,6 +85,37 @@ async function run() {
       const cursor = ordersCollection.find({})
       const orders = await cursor.toArray()
       res.send(orders)
+    })
+
+    // GET API Orders Id
+    app.get('/orders/:id', async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: ObjectId(id)};
+      const order = await ordersCollection.findOne(query);
+      res.send(order);
+    })
+
+    // Update Status Orders
+    app.put('/orders/:id', async (req, res) => {
+          const id = req.params.id;
+          const query = { _id: ObjectId(id)};
+          const status = req.body.status;
+          const options = { upsert: true };
+          const updateDoc = {
+          $set: {
+            status: status
+          },
+        };
+        const result = await ordersCollection.updateOne(query, updateDoc, options);
+        res.json(result);
+    })
+
+    // Delete API Orders Id
+    app.delete('/orders/:id', async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: ObjectId(id)};
+      const order = await ordersCollection.deleteOne(query);
+      res.json(order);
     })
 
 

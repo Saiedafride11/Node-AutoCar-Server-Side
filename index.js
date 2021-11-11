@@ -13,25 +13,26 @@ app.use(express.json())
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.u9lnx.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 
+
 async function run() {
   try {
     await client.connect();
-    const database = client.db("tourX");
-    const toursCollection = database.collection("tours");
+    const database = client.db("autoCar");
+    const carsCollection = database.collection("cars");
     const ordersCollection = database.collection("orders");
     
-    //GET API Tours
-     app.get('/tours', async (req, res) => {
-      const cursor = toursCollection.find({})
-      const tours = await cursor.toArray();
-      res.send(tours)
+    //GET API cars
+     app.get('/cars', async (req, res) => {
+      const cursor = carsCollection.find({})
+      const cars = await cursor.toArray();
+      res.send(cars)
     })
 
     // POST API
-    app.post("/tours", async (req, res) => {
-      const tours= req.body;
-      const tour = await toursCollection.insertOne(tours)
-      res.json(tour)
+    app.post("/cars", async (req, res) => {
+      const cars = req.body;
+      const car = await carsCollection.insertOne(cars)
+      res.json(car)
     })
 
     // ---------------------------------------------------------
@@ -52,36 +53,6 @@ async function run() {
       res.send(orders)
     })
 
-    // GET API Orders Id
-    app.get('/orders/:id', async (req, res) => {
-      const id = req.params.id;
-      const query = { _id: ObjectId(id)};
-      const tour = await ordersCollection.findOne(query);
-      res.send(tour);
-    })
-
-    // Update Status Orders
-    app.put('/orders/:id', async (req, res) => {
-          const id = req.params.id;
-          const query = { _id: ObjectId(id)};
-          const status = req.body.status;
-          const options = { upsert: true };
-          const updateDoc = {
-          $set: {
-            status: status
-          },
-        };
-        const result = await ordersCollection.updateOne(query, updateDoc, options);
-        res.json(result);
-    })
-
-    // Delete API Orders Id
-    app.delete('/orders/:id', async (req, res) => {
-      const id = req.params.id;
-      const query = { _id: ObjectId(id)};
-      const tour = await ordersCollection.deleteOne(query);
-      res.json(tour);
-    })
 
   } finally {
     // await client.close();
@@ -89,10 +60,11 @@ async function run() {
 }
 run().catch(console.dir);
 
+
 app.get('/', (req, res) => {
-    res.send('Hello')
+    res.send('Hello Auto Car')
   })
   
   app.listen(port, () => {
-    console.log('Running Server', port)
+    console.log('Running Server Auto Car', port)
   })

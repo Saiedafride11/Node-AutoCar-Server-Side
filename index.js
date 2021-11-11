@@ -52,25 +52,9 @@ async function run() {
       const car = await carsCollection.deleteOne(query);
       res.json(car);
     })
+   
     // ---------------------------------------------------------
-    // ------------------- reviewsCollection  -----------------------------
-    // ---------------------------------------------------------
-      //GET API cars
-      app.get('/review', async (req, res) => {
-        const cursor = reviewsCollection.find({})
-        const review = await cursor.toArray();
-        res.send(review)
-      })
-  
-      // POST API
-      app.post("/review", async (req, res) => {
-        const reviews = req.body;
-        const review = await reviewsCollection.insertOne(reviews)
-        res.json(review)
-      })
-
-    // ---------------------------------------------------------
-    // ------------------- ordersCollection  -----------------------------
+    // ------------------- ordersCollection  -------------------
     // ---------------------------------------------------------
 
     // POST API Orders
@@ -118,6 +102,22 @@ async function run() {
       res.json(order);
     })
 
+     // ---------------------------------------------------------
+    // ------------------- reviewsCollection  -------------------
+    // ----------------------------------------------------------
+      //GET API cars
+      app.get('/review', async (req, res) => {
+        const cursor = reviewsCollection.find({})
+        const review = await cursor.toArray();
+        res.send(review)
+      })
+  
+      // POST API
+      app.post("/review", async (req, res) => {
+        const reviews = req.body;
+        const review = await reviewsCollection.insertOne(reviews)
+        res.json(review)
+      })
 
   } finally {
     // await client.close();

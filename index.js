@@ -21,6 +21,7 @@ async function run() {
     const carsCollection = database.collection("cars");
     const ordersCollection = database.collection("orders");
     const reviewsCollection = database.collection("reviews");
+    const usersCollection = database.collection('users');
     
     //GET API cars
      app.get('/cars', async (req, res) => {
@@ -102,7 +103,7 @@ async function run() {
       res.json(order);
     })
 
-     // ---------------------------------------------------------
+    // ---------------------------------------------------------
     // ------------------- reviewsCollection  -------------------
     // ----------------------------------------------------------
       //GET API cars
@@ -118,6 +119,36 @@ async function run() {
         const review = await reviewsCollection.insertOne(reviews)
         res.json(review)
       })
+
+    // ---------------------------------------------------------
+    // ------------------- usersCollection  -------------------
+    // ----------------------------------------------------------
+    app.post('/users', async (req, res) => {
+      const user = req.body;
+      const result = await usersCollection.insertOne(user);
+      res.json(result);
+  });
+
+  app.put('/users', async (req, res) => {
+    const user = req.body;
+    const filter = { email: user.email };
+    const options = { upsert: true };
+    const updateDoc = { $set: user };
+    const result = await usersCollection.updateOne(filter, updateDoc, options);
+    res.json(result);
+});
+
+
+  app.put('/users/admin', async (req, res) => {
+    const user = req.body;
+    const filter = { email: user.email };
+    const updateDoc = { $set: { role: 'admin' } };
+    const result = await usersCollection.updateOne(filter, updateDoc);
+    res.json(result);
+})
+
+
+
 
   } finally {
     // await client.close();

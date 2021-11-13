@@ -146,12 +146,14 @@ async function run() {
     // ------------------- usersCollection  -------------------
     // ----------------------------------------------------------
 
+    //Post API Users
     app.post('/users', async (req, res) => {
       const user = req.body;
       const result = await usersCollection.insertOne(user);
       res.json(result);
     });
 
+    //Update API Users
     app.put('/users', async (req, res) => {
       const user = req.body;
       const filter = { email: user.email };
@@ -161,6 +163,7 @@ async function run() {
       res.json(result);
     });
 
+    //Update API Users Admin
     app.put('/users/admin', verifyToken, async (req, res) => {
       const user = req.body;
       const requester = req.decodedEmail;
@@ -179,6 +182,7 @@ async function run() {
 
     })
 
+    //GET API Users
     app.get('/users/:email', async (req, res) => {
       const email = req.params.email;
       const query = { email: email };
@@ -208,13 +212,27 @@ async function run() {
       res.json(message)
     })
 
+     // GET API messages Id
+     app.get('/message/:id', async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: ObjectId(id)};
+      const message = await messageCollection.findOne(query);
+      res.send(message);
+    })
+
+    // Delete API messages Id
+    app.delete('/message/:id', async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: ObjectId(id)};
+      const message = await messageCollection.deleteOne(query);
+      res.json(message);
+    })
 
   } finally {
     // await client.close();
   }
 }
 run().catch(console.dir);
-
 
 app.get('/', (req, res) => {
     res.send('Hello Auto Car')
